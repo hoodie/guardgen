@@ -1,0 +1,11 @@
+{
+  "name": "guard-gen",
+  "version": "0.1.0",
+  "description": "generate typeguards from typescript interfaces and enums",
+  "main": "lib/index.js",
+  "author": "Hendrik Sollich <hendrik@hoodie.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.0.0-rc"
+  }
+}
