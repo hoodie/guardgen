@@ -6,6 +6,11 @@
   "author": "Hendrik Sollich <hendrik@hoodie.de>",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^10.5.2",
+    "ts-node": "^7.0.0",
     "typescript": "^3.0.0-rc"
+  },
+  "scripts": {
+    "execute": "npx ts-node src/index.ts"
   }
 }
