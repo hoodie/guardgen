@@ -31,7 +31,7 @@ const propertyChecks = (iface: ts.InterfaceDeclaration, exportedSymbols: string[
         .filter(ts.isPropertySignature)
         .map(prop => visitNode({node: prop as any, name: propertyName(prop), exportedSymbols }))
         .map(properyCheck)
-        .join(' &&\n    ');
+        .join(' &&\n        ');
 
 const interfaceGuard = (iface: ts.InterfaceDeclaration, exportedSymbols: string[]): string => {
     const name = iface.name.escapedText as string;

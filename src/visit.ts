@@ -51,7 +51,7 @@ const visitPrimitive: Visitor = ({name, typeName, isOptional}: VisitorContext): 
 export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContext>): NodeInfo {
     if (!hasType(node)) throw new Error("only TypeNodes allowed");
 
-    const baseContext = {
+    const ctx = {
         name: name || 'x',
         node,
         valueCheck: `true /* unimplemented for ${SyntaxKind[node.type.kind]} "${name}" */`,
@@ -61,20 +61,20 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
 
     if (node.type.kind === SyntaxKind.NumberKeyword) {
         // odir({baseContext})
-        return visitPrimitive({ ...baseContext, typeName: 'number' })
+        return visitPrimitive({ ...ctx, typeName: 'number' })
 
     } else if (node.type.kind === SyntaxKind.StringKeyword) {
-        return visitPrimitive({ ...baseContext, typeName: 'string' })
+        return visitPrimitive({ ...ctx, typeName: 'string' })
 
     } else if (node.type.kind === SyntaxKind.ObjectKeyword) {
-        return visitPrimitive({ ...baseContext, typeName: "object" });
+        return visitPrimitive({ ...ctx, typeName: "object" });
 
     } else if (node.type.kind === SyntaxKind.AnyKeyword) {
-        return toNodeInfo({ ...baseContext, typeName: 'any', valueCheck: `true` });
+        return toNodeInfo({ ...ctx, typeName: 'any', valueCheck: `true` });
 
     } else if (ts.isLiteralTypeNode(node.type) && ts.isLiteralExpression(node.type.literal)) {
         return toNodeInfo({
-          ...baseContext,
+          ...ctx,
           typeName: `'${node.type.literal.text}'`,
           valueCheck: `${name} === '${ node.type.literal.text }'`,
         });
@@ -84,7 +84,7 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
         const elementCheck = typeCheck(node.type.elementType);
 
         return toNodeInfo({
-            ...baseContext,
+            ...ctx,
             typeName: `Array<${elementTypeName}>`,
             valueCheck: `(Array.isArray(${name}) && ${name}.every(${elementCheck}))`,
         });
@@ -92,34 +92,35 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
     } else if (ts.isTypeReferenceNode(node.type) && ts.isIdentifier(node.type.typeName)) {
         const typeName = node.type.typeName.escapedText as string;
         const exported = exportedSymbols && exportedSymbols.includes(typeName)
-        const valueCheck = exported ? `is${typeName}(${name})` : `true /* skipping private ${name}: ${typeName}*/`;
+        const preCheck = ctx.isOptional ? `${name} && ` : ''; // because a || doesn't cut it
+        const valueCheck = exported ? `${preCheck}is${typeName}(${name})` : `true /* skipping private ${name}: ${typeName}*/`;
 
         return toNodeInfo({
-            ...baseContext,
+            ...ctx,
             typeName,
             valueCheck
         });
 
     } else if (ts.isUnionTypeNode(node.type)) {
         const l = node.type.types.map(t =>
-          visitNode({ ...baseContext, node: { type: t } as any })
+          visitNode({ ...ctx, node: { type: t } as any })
         );
         const check = l.map(t => t.valueCheck).join(' || ');
         return toNodeInfo({
-            ...baseContext,
+            ...ctx,
             typeName: l.map(t => t.typeName).join(' | '),
             valueCheck: `(${check})`,
         });
 
     } else if(ts.isParenthesizedTypeNode(node.type)) {
         const newNode = { ...node, type: node.type.type };
-        return visitNode({...baseContext, node: newNode})
+        return visitNode({...ctx, node: newNode})
 
     } else {
         return toNodeInfo({
-            ...baseContext,
+            ...ctx,
             typeName: `unhandled typeName(${SyntaxKind[node.type.kind]})`,
-            valueCheck: baseContext.valueCheck,
+            valueCheck: ctx.valueCheck,
         });
     }
 };

@@ -1,3 +1,4 @@
+#!/bin/env node
 import * as fs from 'fs';
 import ts from 'typescript';
 import { generateGuards, generateImportLine } from './guards';
