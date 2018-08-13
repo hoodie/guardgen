@@ -1,5 +1,5 @@
 export interface Foo {
-    name: 'foo';
+    name: 'foo'; // single quotes
     value: string;
     amount?: number;
     more: object,
@@ -7,7 +7,7 @@ export interface Foo {
 }
 
 export interface Bar {
-    name: 'bar';
+    name: "bar"; // double quotes
     list: number[];
     maybesomething: 'something' | 'nothing';
 }
