@@ -1,6 +1,5 @@
-import ts, { TsConfigSourceFile, LiteralExpression, TypeFlags, TypeReferenceNode } from 'typescript';
+import ts, {TypeFlags} from 'typescript';
 import { SyntaxKind } from 'typescript';
-import { odir, comment, dir } from './utils';
 
 export interface NodeInfo  {
     name: string,

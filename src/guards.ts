@@ -1,5 +1,5 @@
-import ts, { SyntaxKind, Statement } from 'typescript';
-import { capitalize, odir, dir, comment } from './utils';
+import ts, { Statement } from 'typescript';
+import { capitalize, dir } from './utils';
 import { visitNode, NodeInfo, isExported } from './visit';
 
 export interface GeneratorConfig {
@@ -43,7 +43,7 @@ const propertyCheckWithWarning = ({ name, isOptional, valueCheck, typeName }: No
         const ${name}ChecksOut = ${pc};
         if(!${name}ChecksOut) {console.warn("${name} is not a propper ${typeName}")}
         return ${name}ChecksOut;
-    })(${name})\n`
+        })(${name})`
 };
 
 // generate all checks for individual interface properties
@@ -58,7 +58,7 @@ const interfaceGuard = (iface: ts.InterfaceDeclaration, exportedSymbols: string[
     const name = iface.name.escapedText as string;
     const maybe = `maybe${capitalize(name)}`;
 
-    const head = `export const is${name} = (${maybe}: ${name}): ${maybe} is ${name} =>`;
+    const head = `export const is${name} = (${maybe}: any): ${maybe} is ${name} =>`;
 
     const checks = propertyChecks(iface, exportedSymbols, config);
     const properties = propertyNames(iface).join(', ');
@@ -82,12 +82,12 @@ const publicStatements = (sourceFile: ts.SourceFile): { statements: Statement[],
     return {statements, names}
 }
 
-const typeGuard = (node: ts.TypeAliasDeclaration) => {
+const typeGuard = (node: ts.TypeAliasDeclaration, exportedSymbols: string[]) => {
     const name = capitalize(node.name.escapedText as string);
     const maybe = `maybe${name}`;
 
-    const head = `const is${name} = (${maybe}: ${name}): ${maybe} is ${name} =>`;
-    const {valueCheck} = visitNode({node, name: maybe});
+    const head = `export const is${name} = (${maybe}: any): ${maybe} is ${name} =>`;
+    const {valueCheck} = visitNode({node, name: maybe, exportedSymbols});
 
     return `\n// generated typeguard for ${name}\n${head}\n    ${valueCheck}`;
 };
@@ -96,7 +96,7 @@ const generateGuard = (node: ts.Node, exportedSymbols: string[], config: Generat
     if (ts.isInterfaceDeclaration(node)) {
         return interfaceGuard(node, exportedSymbols, config);
     } else if (ts.isTypeAliasDeclaration(node)) {
-        return typeGuard(node);
+        return typeGuard(node, exportedSymbols);
     } else {
         return `// `;
     }

@@ -39,7 +39,7 @@ programm
     .alias('gen')
     .description('generate guards from given ts file')
     .option('-w, --warners', 'embed code that produces warnings')
-    .action((file, {warners}) => {
+    .action((file, { warners }) => {
         const embedWarnings = !!warners;
         if (!!file) {
           const generated = generateFrom(file, {embedWarnings})
