@@ -1,6 +1,6 @@
-# guard-gen
+# GuardGen
 
-**WIP** generates typescript [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html)s from interface definitions.
+GuardGen generates typescript [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html)s from interface definitions so you don't have to write them and the don't get outdated.
 
 So far it can understand something like this:
 
@@ -62,3 +62,60 @@ export const isFoobar = (maybeFoobar: Foobar): maybeFoobar is Foobar => {
 Type guards are required to move some of the guarantees of the typesystem from compiletime to runtime. Unfortunately generating runtime code is not part of typescripts philosophy.
 However their compiler API makes it rather easy to generate them.
 This is currently only a toy project, if you have more experience with TypeScripts Compiler API and great ambitions please pick it up :D
+
+## Usage
+
+### Cli
+
+`> guardgen`
+
+```
+  Usage: guardgen [options] [command]
+
+  Options:
+
+    -V, --version                  output the version number
+    -h, --help                     output usage information
+
+  Commands:
+
+    generate|gen [options] [FILE]  generate guards from given ts file
+```
+
+`> guardgen generate --help`
+
+```
+  Usage: generate|gen [options] [FILE]
+
+  generate guards from given ts file
+
+  Options:
+
+    -w, --warners         embed code that produces warnings
+    -g, --guardsfile      put a .guards.ts file next to your input
+    -o, --outfile [FILE]  path to file to generate
+    -h, --help            output usage information
+```
+
+### Output file
+
+`guardgen some-types.ts`
+prints to stdout.
+
+`guardgen some-types.ts -o src/someguards.ts `
+generates
+`src/someguards.ts`.
+
+`guardgen some-types.ts -o src/ `
+generates
+`src/some-types.guards.ts`.
+
+## Contribution
+
+
+### I found an issue
+OMG, I'm so sorry - please don't be mad! Thanks for reporting it in a kind manner and perhaps even helping me fix it quickly.
+
+### I want a feature X
+1. Ya! That sounds like a cool idea, now I want that too. Oh you already started implementing it? Even better, let me have a look and perhaps we just merge it.
+2. Hmm sounds like that is a different use case for a code generator - so let's not put it in guardgen and instead let's kick of an alternate generator for your special usecase. I can perhaps help you navigate Typescripts Compiler API or you just use guardgen as a template.
