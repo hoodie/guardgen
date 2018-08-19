@@ -1,53 +1,75 @@
-#!/bin/env node
 import * as fs from 'fs';
 import programm from 'commander';
 import ts from 'typescript';
 import { generateGuards, generateImportLine, GeneratorConfig } from './guards';
+import { dir, comment } from './utils';
+import { importPath, outfilePath } from './file-utils';
 
 const openFile = (path: string): string => fs.readFileSync(path, 'utf8');
-const error = (message: string) => console.error(`ERROR: ${message}`)
+const error = (message: string) => console.error(`ERROR: ${message}`);
 
 export interface Generated {
-    imports: string;
+    imports?: string;
     guards: string[];
 }
 
-function generateFrom(sourceFilePath: string, { embedWarnings }: GeneratorConfig): Generated {
+function generateFrom(sourceFilePath: string, config: GeneratorConfig): Generated {
     const sourceText = openFile(sourceFilePath);
     const sourceFile = ts.createSourceFile(
-      "x.ts",
-      sourceText,
-      ts.ScriptTarget.Latest,
-      true
+        "x.ts",
+        sourceText,
+        ts.ScriptTarget.Latest,
+        true
     );
 
-    const imports = generateImportLine(sourceFile, sourceFilePath);
-    const guards = generateGuards(sourceFile, { embedWarnings });
+    const { importFrom } = config;
+    const imports = importFrom && generateImportLine(sourceFile, importFrom);
+    const guards = generateGuards(sourceFile, config);
 
-    return {imports, guards}
+    return { imports, guards }
 }
 
-function printGuards({imports, guards}: Generated) {
-  console.log(imports)
-  guards.forEach(guard => console.log(guard))
-}
+const printGuards = (generated: Generated) =>
+    console.log(concatGuards(generated));
+
+const concatGuards = ({ imports, guards }: Generated): string =>
+    [imports].concat(guards).join('\n');
+
+const writeGuardsFile = (generated: Generated, path: string) =>
+    fs.writeFileSync(path, concatGuards(generated), { encoding: 'utf8' });
 
 programm
     .version("0.1.0")
-    .name('guardner')
-    .command('generate [FILE]')
-    .alias('gen')
-    .description('generate guards from given ts file')
-    .option('-w, --warners', 'embed code that produces warnings')
-    .action((file, { warners }) => {
+    .name("guardner")
+    .command("generate [FILE]")
+    .alias("gen")
+    .description("generate guards from given ts file")
+    .option("-w, --warners", "embed code that produces warnings")
+    .option("-g, --guardsfile", "put a .guards.ts file next to your input")
+    .option("-o, --outfile [FILE]", "path to file to generate")
+    .action((inputFile, { warners, outfile }) => {
         const embedWarnings = !!warners;
-        if (!!file) {
-          const generated = generateFrom(file, {embedWarnings})
-          printGuards(generated);
+        if (!!inputFile) {
+            const outputFile = outfilePath(inputFile, outfile);
+
+            let generated: Generated;
+
+            if (outfile) {
+                const importFrom = importPath(inputFile, outputFile);
+                generated = generateFrom(inputFile, {
+                  importFrom,
+                  embedWarnings
+                });
+                writeGuardsFile(generated, outfile);
+            } else {
+                generated = generateFrom(inputFile, { embedWarnings });
+                printGuards(generated);
+            }
+
         } else {
-          error("please pass a typescript file to generate guards for");
+            error("please pass a typescript file to generate guards for");
         }
-    })
+    });
 
 
 if (!process.argv.slice(2).length) {

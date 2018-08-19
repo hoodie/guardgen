@@ -30,3 +30,9 @@ export interface Foobar {
 interface PrivateInterface {
     top: 'secret'
 }
+
+
+export class SoClassy {
+    public foo?: Foo;
+    constructor() {}
+}

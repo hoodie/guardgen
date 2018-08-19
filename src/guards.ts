@@ -2,9 +2,7 @@ import ts, { Statement } from 'typescript';
 import { capitalize, dir } from './utils';
 import { visitNode, NodeInfo, isExported } from './visit';
 
-export interface GeneratorConfig {
-    embedWarnings: boolean;
-}
+// internal
 
 // determine the name of an interface property
 const propertyName = (node: ts.PropertySignature): string => {
@@ -25,7 +23,7 @@ const propertyNames = (iface: ts.InterfaceDeclaration): string[] =>
 
 
 // generate an individual interface property check
-const propertyCheck = ({embedWarnings}: GeneratorConfig) => {
+const propertyCheck = ({ embedWarnings }: GeneratorConfig) => {
     if (embedWarnings) {
         return propertyCheckWithWarning
     } else {
@@ -102,9 +100,19 @@ const generateGuard = (node: ts.Node, exportedSymbols: string[], config: Generat
     }
 };
 
-export function generateImportLine(sourceFile: ts.SourceFile, path: string): string {
+
+// public
+export interface GeneratorConfig {
+    // path to import types from
+    importFrom?: string;
+
+    // generate warning code for every single property
+    embedWarnings: boolean;
+}
+
+export function generateImportLine(sourceFile: ts.SourceFile, importFrom: string): string {
     const { names } = publicStatements(sourceFile);
-    return `import {${names.join(', ')}} from '${path.slice(0, -3)}'`;
+    return `import {${names.join(", ")}} from '${importFrom}'`;
 }
 
 export function generateGuards(sourceFile: ts.SourceFile, config: GeneratorConfig): string[] {
