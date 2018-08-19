@@ -8,10 +8,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/commander": "^2.12.2",
-    "@types/node": "^10.5.2"
+    "@types/node": "^10.5.2",
+    "tslint": "^5.11.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "lint": "tslint --project tsconfig.json src/**/*.ts",
     "execute": "npx ts-node src/index.ts"
   },
   "dependencies": {

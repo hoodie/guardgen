@@ -1,4 +1,4 @@
-import { statSync, existsSync } from 'fs';
+import { existsSync, statSync } from 'fs';
 import { basename, dirname, join, relative } from 'path';
 import { comment } from './utils';
 
@@ -6,13 +6,13 @@ const dtsBasename = (inputFile: string): string =>
     basename(basename(inputFile, '.d.ts'), '.ts');
 
 const makePathImportable = (tsPath: string): string => {
-    const importPath = join(dirname(tsPath), dtsBasename(tsPath));
-    if (importPath.startsWith('../')) {
-        return importPath
+    const importFilePath = join(dirname(tsPath), dtsBasename(tsPath));
+    if (importFilePath.startsWith('../')) {
+        return importFilePath;
     } else {
-        return `./${importPath}`;
+        return `./${importFilePath}`;
     }
-}
+};
 
 const guardFileName = (inputFile: string): string =>
     dtsBasename(inputFile) + '.guards.ts';
