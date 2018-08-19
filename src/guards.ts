@@ -31,8 +31,12 @@ const propertyCheck = ({ embedWarnings }: GeneratorConfig) => {
     }
 };
 
-const silentPropertyCheck = ({ name, isOptional, valueCheck, typeName }: NodeInfo) =>
-    `${ isOptional ? `!(${name}) || ` : '' }${valueCheck} /*${name}: ${typeName}${ isOptional ? `?` : '' }*/` ;
+
+const propertyDescription = ({ name, isOptional, typeName }: NodeInfo) =>
+    `${name}: ${typeName}${ isOptional ? `?` : '' }`;
+
+const silentPropertyCheck = ({ name, isOptional, valueCheck }: NodeInfo) =>
+    `${isOptional ? `!(${name}) || ` : '' }${valueCheck}`;
 
 
 const propertyCheckWithWarning = ({ name, isOptional, valueCheck, typeName }: NodeInfo) => {
@@ -43,6 +47,7 @@ const propertyCheckWithWarning = ({ name, isOptional, valueCheck, typeName }: No
         return ${name}ChecksOut;
         })(${name})`;
 };
+
 
 // generate all checks for individual interface properties
 const propertyChecks = (iface: ts.InterfaceDeclaration, exportedSymbols: string[], config: GeneratorConfig): string =>
@@ -63,7 +68,7 @@ const interfaceGuard = (iface: ts.InterfaceDeclaration, exportedSymbols: string[
 
     const destructuring = `const {${properties}} = ${maybe}`;
 
-    return `\n// generated typeguard for ${name}\n${head} {\n    ${destructuring};\n\n    return ${checks};\n}\n\n`;
+    return `\n// generated typeguard for ${name}\n${head} {\n    ${destructuring};\n\n    return ${checks};\n};\n\n`;
 };
 
 const publicStatements = (sourceFile: ts.SourceFile): { statements: Statement[], names: string[] } => {
@@ -85,9 +90,9 @@ const typeGuard = (node: ts.TypeAliasDeclaration, exportedSymbols: string[]) => 
     const maybe = `maybe${name}`;
 
     const head = `export const is${name} = (${maybe}: any): ${maybe} is ${name} =>`;
-    const {valueCheck} = visitNode({node, name: maybe, exportedSymbols});
+    const { valueCheck } = visitNode({ node, name: maybe, exportedSymbols });
 
-    return `\n// generated typeguard for ${name}\n${head}\n    ${valueCheck}`;
+    return `\n// generated typeguard for ${name}\n${head}\n    ${valueCheck};`;
 };
 
 const generateGuard = (node: ts.Node, exportedSymbols: string[], config: GeneratorConfig): string => {
@@ -113,7 +118,7 @@ export interface GeneratorConfig {
 
 export function generateImportLine(sourceFile: ts.SourceFile, importFrom: string): string {
     const { names } = publicStatements(sourceFile);
-    return `import {${names.join(', ')}} from '${importFrom}'`;
+    return `import {${names.sort().join(', ')}} from '${importFrom}';`;
 }
 
 export function generateGuards(sourceFile: ts.SourceFile, config: GeneratorConfig): string[] {

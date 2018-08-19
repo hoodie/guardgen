@@ -94,7 +94,7 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
         const preCheck = ctx.isOptional ? `${name} && ` : ''; // because a || doesn't cut it
         const valueCheck = exported
             ? `${preCheck}is${typeName}(${name})`
-            : `true /* skipping private ${name}: ${typeName}*/`;
+            : `true /* ${name}: ${typeName}*/`;
 
         return toNodeInfo({
             ...ctx,
