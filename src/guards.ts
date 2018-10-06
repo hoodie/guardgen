@@ -35,8 +35,9 @@ const propertyCheck = ({ embedWarnings }: GeneratorConfig) => {
 const propertyDescription = ({ name, isOptional, typeName }: NodeInfo) =>
     `${name}: ${typeName}${ isOptional ? `?` : '' }`;
 
-const silentPropertyCheck = ({ name, isOptional, valueCheck }: NodeInfo) =>
-    `${isOptional ? `!(${name}) || ` : '' }${valueCheck}`;
+const silentPropertyCheck = (node: NodeInfo) =>
+    // `${node.isOptional ? `!(${node.name}) || ` : '' }${node.valueCheck}`;
+    `${node.isOptional ? `!(${node.name}) || ` : '' }${node.valueCheck} /* ${propertyDescription(node)}*/`;
 
 
 const propertyCheckWithWarning = ({ name, isOptional, valueCheck, typeName }: NodeInfo) => {

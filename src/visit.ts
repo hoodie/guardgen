@@ -88,7 +88,8 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
             valueCheck: `(Array.isArray(${name}) && ${name}.every(${elementCheck}))`,
         });
 
-    } else if (ts.isTypeReferenceNode(node.type) && ts.isIdentifier(node.type.typeName)) {
+    } else if (ts.isTypeReferenceNode(node.type)) {
+        if (ts.isIdentifier(node.type.typeName)) {
         const typeName = node.type.typeName.escapedText as string;
         const exported = exportedSymbols && exportedSymbols.includes(typeName);
         const preCheck = ctx.isOptional ? `${name} && ` : ''; // because a || doesn't cut it
@@ -101,7 +102,9 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
             typeName,
             valueCheck
         });
-
+        } else {
+            throw new Error('unhandled case: typereference without identifier');
+        }
     } else if (ts.isUnionTypeNode(node.type)) {
         const l = node.type.types.map(t =>
           visitNode({ ...ctx, node: { type: t } as any })
@@ -117,6 +120,13 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
         const newNode = { ...node, type: node.type.type };
         return visitNode({...ctx, node: newNode});
 
+    } else if (ts.isPropertySignature(node) && ts.isFunctionTypeNode(node.type) && ts.isIdentifier(node.name)) {
+        const { valueCheck } = visitPrimitive({ ...ctx, typeName: 'function' });
+        return toNodeInfo({
+            ...ctx,
+            typeName: `unhandled typeName(${SyntaxKind[node.type.kind]})`,
+            valueCheck: `${valueCheck} && (name.length >= ${node.type.parameters.length})`
+        });
     } else {
         return toNodeInfo({
             ...ctx,

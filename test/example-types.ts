@@ -1,5 +1,5 @@
 export interface Foo {
-    name: 'foo'; // single quotes
+    name: 'foo';
     value: string;
     amount?: number;
     more: object,
@@ -7,14 +7,14 @@ export interface Foo {
 }
 
 export interface Bar {
-    name: "bar"; // double quotes
+    name: 'bar';
     list: number[];
     maybesomething: 'something' | 'nothing';
 }
 
 export type Direction = 'up' | 'down';
 
-export type FooOrBar = Foo | Bar
+export type FooOrBar = Foo | Bar;
 
 export interface Foobar {
     foo: Foo;
@@ -23,16 +23,10 @@ export interface Foobar {
     names?: string[],
     direction: Direction,
     directions: Direction[],
-    numbers?: (number)[],
+    numbers?: number[],
     parts: PrivateInterface,
 }
 
 interface PrivateInterface {
     top: 'secret'
-}
-
-
-export class SoClassy {
-    public foo?: Foo;
-    constructor() {}
 }
