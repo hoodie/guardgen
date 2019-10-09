@@ -4,7 +4,7 @@
     "scripts": {
         "build:lib": "yarn --cwd library build",
         "build:bin": "yarn --cwd bin build",
-        "build": "yarn build:lib && yarn build:bin",
+        "build": "yarn build:bin",
         "test": "yarn --cwd library test"
     }
 }

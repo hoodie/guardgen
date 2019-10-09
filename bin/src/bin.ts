@@ -1,13 +1,23 @@
-import programm from 'commander';
+import program from 'commander';
 import * as fs from 'fs';
-import ts from 'typescript';
 import { importPath, outfilePath } from './file-utils';
+
+import { generateFrom, Generated } from 'guardgen-lib'
 
 const openFile = (path: string): string => fs.readFileSync(path, 'utf8');
 const error = (message: string) => console.error(`ERROR: ${message}`);
 
-    /*
-programm
+
+const printGuards = (generated: Generated) =>
+    console.log(concatGuards(generated));
+
+const concatGuards = ({ imports, guards }: Generated): string =>
+    [imports].concat(guards).join('\n');
+
+const writeGuardsFile = (generated: Generated, path: string) =>
+    fs.writeFileSync(path, concatGuards(generated), { encoding: 'utf8' });
+
+program
     .version('0.1.0')
     .name('guardner')
     .command('generate [FILE]')
@@ -42,11 +52,9 @@ programm
 
 
 if (!process.argv.slice(2).length) {
-    programm.outputHelp();
+    program.outputHelp();
 
 } else {
-    programm.parse(process.argv);
+    program.parse(process.argv);
 
 }
-
-*/

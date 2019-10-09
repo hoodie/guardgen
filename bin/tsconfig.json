@@ -1,9 +1,13 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "types": [ "node" ],
     "outDir": "./build"
   },
+  "references": [
+    {"path": "../library"}
+  ],
   "include": [
-    "src"
+    "src/**/*.ts"
   ]
 }
