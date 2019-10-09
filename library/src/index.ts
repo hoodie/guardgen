@@ -3,7 +3,6 @@ import ts from 'typescript';
 import { generateGuards, generateImportLine, GeneratorConfig } from './guards';
 
 const openFile = (path: string): string => fs.readFileSync(path, 'utf8');
-const error = (message: string) => console.error(`ERROR: ${message}`);
 
 export interface Generated {
     imports?: string;
