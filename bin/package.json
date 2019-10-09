@@ -1,0 +1,24 @@
+{
+    "name": "guardgen",
+    "version": "0.1.0",
+    "description": "generate typeguards from typescript interfaces and enums",
+    "author": "Hendrik Sollich <hendrik@hoodie.de>",
+    "bin": "lib/bin.js",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/commander": "^2.12.2",
+        "@types/jest": "^24.0.18",
+        "@types/node": "^12.7.12",
+        "ts-jest": "^24.1.0",
+        "tslint": "^5.20.0"
+    },
+    "scripts": {
+        "build": "tsc --build tsconfig.json",
+        "lint": "tslint --project tsconfig.json src/**/*.ts",
+        "execute": "npx ts-node src/index.ts"
+    },
+    "dependencies": {
+        "commander": "^3.0.2",
+        "typescript": "3.7.0-beta"
+    }
+}

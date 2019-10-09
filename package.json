@@ -1,28 +1,10 @@
 {
-  "name": "guardgen-ts",
-  "version": "0.1.0",
-  "description": "generate typeguards from typescript interfaces and enums",
-  "main": "lib/index.js",
-  "author": "Hendrik Sollich <hendrik@hoodie.de>",
-  "bin": "lib/index.js",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/commander": "^2.12.2",
-    "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.12",
-    "ts-jest": "^24.1.0",
-    "tslint": "^5.20.0"
-  },
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "lint": "tslint --project tsconfig.json src/**/*.ts",
-    "execute": "npx ts-node src/index.ts",
-    "test": "jest",
-    "updateSnapshots": "jest --updateSnapshot"
-  },
-  "dependencies": {
-    "commander": "^3.0.2",
-    "jest": "^24.9.0",
-    "typescript": "3.7"
-  }
+    "private": true,
+    "workspaces": [ "library", "bin" ],
+    "scripts": {
+        "build:lib": "yarn --cwd library build",
+        "build:bin": "yarn --cwd bin build",
+        "build": "yarn build:lib && yarn build:bin",
+        "test": "yarn --cwd library test"
+    }
 }

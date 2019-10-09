@@ -1,6 +1,5 @@
 import { existsSync, statSync } from 'fs';
 import { basename, dirname, join, relative } from 'path';
-import { comment } from './utils';
 
 const dtsBasename = (inputFile: string): string =>
     basename(basename(inputFile, '.d.ts'), '.ts');
