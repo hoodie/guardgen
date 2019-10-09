@@ -12,7 +12,7 @@ export interface Generated {
     guards: string[];
 }
 
-function generateFrom(sourceFilePath: string, config: GeneratorConfig): Generated {
+export function generateFrom(sourceFilePath: string, config: GeneratorConfig): Generated {
     const sourceText = openFile(sourceFilePath);
     const sourceFile = ts.createSourceFile(
         'x.ts',
@@ -37,6 +37,7 @@ const concatGuards = ({ imports, guards }: Generated): string =>
 const writeGuardsFile = (generated: Generated, path: string) =>
     fs.writeFileSync(path, concatGuards(generated), { encoding: 'utf8' });
 
+    /*
 programm
     .version('0.1.0')
     .name('guardner')
@@ -78,3 +79,5 @@ if (!process.argv.slice(2).length) {
     programm.parse(process.argv);
 
 }
+
+*/
