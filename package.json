@@ -9,9 +9,9 @@
   "devDependencies": {
     "@types/commander": "^2.12.2",
     "@types/jest": "^24.0.18",
-    "@types/node": "^10.5.2",
+    "@types/node": "^12.7.12",
     "ts-jest": "^24.1.0",
-    "tslint": "^5.11.0"
+    "tslint": "^5.20.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -21,8 +21,8 @@
     "updateSnapshots": "jest --updateSnapshot"
   },
   "dependencies": {
-    "commander": "^2.17.1",
+    "commander": "^3.0.2",
     "jest": "^24.9.0",
-    "typescript": "^3.0.0"
+    "typescript": "3.7"
   }
 }
