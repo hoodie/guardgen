@@ -16,7 +16,7 @@ interface Context<T extends ts.Node> extends NodeInfo {
 type VisitorContext = Context<ts.Node & HasType>;
 
 export const isExported = (node: ts.Statement) =>
-    node.modifiers && node.modifiers.some(
+    node.modifiers?.some(
         ({ kind }) => kind === SyntaxKind.ExportKeyword
     );
 
@@ -91,7 +91,7 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
     } else if (ts.isTypeReferenceNode(node.type)) {
         if (ts.isIdentifier(node.type.typeName)) {
         const typeName = node.type.typeName.escapedText as string;
-        const exported = exportedSymbols && exportedSymbols.includes(typeName);
+        const exported = exportedSymbols?.includes(typeName);
         const preCheck = ctx.isOptional ? `${name} && ` : ''; // because a || doesn't cut it
         const valueCheck = exported
             ? `${preCheck}is${typeName}(${name})`

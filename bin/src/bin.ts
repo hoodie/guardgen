@@ -2,7 +2,7 @@ import program from 'commander';
 import * as fs from 'fs';
 import { importPath, outfilePath } from './file-utils';
 
-import { generateFrom, Generated } from 'guardgen-lib'
+import { generateFrom, Generated } from 'guardgen-lib';
 
 const openFile = (path: string): string => fs.readFileSync(path, 'utf8');
 const error = (message: string) => console.error(`ERROR: ${message}`);

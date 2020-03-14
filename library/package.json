@@ -8,9 +8,9 @@
     "bin": "lib/index.js",
     "license": "MIT",
     "devDependencies": {
-        "@types/jest": "^24.0.18",
-        "ts-jest": "^24.1.0",
-        "tslint": "^5.20.0"
+        "@types/jest": "^25.1.4",
+        "ts-jest": "^25.2.1",
+        "tslint": "^6.1.0"
     },
     "scripts": {
         "build": "tsc --build tsconfig.json",
@@ -20,8 +20,8 @@
         "updateSnapshots": "jest --updateSnapshot"
     },
     "dependencies": {
-        "commander": "^3.0.2",
-        "jest": "^24.9.0",
-        "typescript": "3.7.0-beta"
+        "commander": "^5.0.0",
+        "jest": "^25.1.0",
+        "typescript": "3.8.3"
     }
 }

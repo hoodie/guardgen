@@ -5,6 +5,7 @@
         "build:lib": "yarn --cwd library build",
         "build:bin": "yarn --cwd bin build",
         "build": "yarn build:bin",
-        "test": "yarn --cwd library test"
+        "test": "yarn --cwd library test",
+        "lint": "yarn --cwd library lint && yarn --cwd bin lint"
     }
 }
