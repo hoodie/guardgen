@@ -9,13 +9,16 @@
     "license": "MIT",
     "devDependencies": {
         "@types/jest": "^25.1.4",
+        "@typescript-eslint/eslint-plugin": "^2.23.0",
+        "@typescript-eslint/parser": "^2.23.0",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.10.0",
         "prettier": "^1.19.1",
-        "ts-jest": "^25.2.1",
-        "tslint": "^6.1.0"
+        "ts-jest": "^25.2.1"
     },
     "scripts": {
         "build": "tsc --build tsconfig.json",
-        "lint": "tslint --project tsconfig.json src/**/*.ts",
+        "lint": "eslint src/**/*.ts",
         "execute": "npx ts-node src/index.ts",
         "test": "jest",
         "updateSnapshots": "jest --updateSnapshot"

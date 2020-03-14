@@ -4,7 +4,6 @@ import { importPath, outfilePath } from './file-utils';
 
 import { generateFrom, Generated } from 'guardgen-lib';
 
-const openFile = (path: string): string => fs.readFileSync(path, 'utf8');
 const error = (message: string) => console.error(`ERROR: ${message}`);
 
 const printGuards = (generated: Generated) => console.log(concatGuards(generated));
@@ -25,7 +24,7 @@ program
     .option('-o, --outfile [FILE]', 'path to file to generate')
     .action((inputFile, { warners, outfile }) => {
         const embedWarnings = !!warners;
-        if (!!inputFile) {
+        if (inputFile) {
             const outputFile = outfilePath(inputFile, outfile);
 
             let generated: Generated;

@@ -1,5 +1,6 @@
-import ts, { Statement } from 'typescript';
-import { capitalize, dir } from './utils';
+/* eslint-disable @typescript-eslint/no-use-before-define */
+import ts, { Statement, Node } from 'typescript';
+import { capitalize } from './utils';
 import { isExported, NodeInfo, visitNode } from './visit';
 
 // internal
@@ -7,7 +8,7 @@ import { isExported, NodeInfo, visitNode } from './visit';
 // determine the name of an interface property
 const propertyName = (node: ts.PropertySignature): string => {
     if (ts.isIdentifier(node.name)) {
-        return node.name.escapedText as any;
+        return node.name.escapedText as string;
     } else if (ts.isStringLiteral(node.name)) {
         return node.name.text;
     } else {

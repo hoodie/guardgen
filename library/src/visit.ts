@@ -1,4 +1,4 @@
-import ts, { TypeFlags } from 'typescript';
+import ts from 'typescript';
 import { SyntaxKind } from 'typescript';
 
 export interface NodeInfo {
@@ -29,9 +29,6 @@ const typeCheck = (typ: ts.TypeNode): string => {
     const { valueCheck, typeName } = visitNode({ node: { type: typ } as any });
     return valueCheck ? `(x) => ${valueCheck}` : `/* unimplemented for ${typeName} */`;
 };
-
-const kindName = (kind: SyntaxKind) => SyntaxKind[kind];
-const flagName = (flag: TypeFlags) => TypeFlags[flag];
 
 // string, number, object
 const toNodeInfo: Visitor = ({ name, typeName, valueCheck, isOptional }: VisitorContext): NodeInfo => ({
