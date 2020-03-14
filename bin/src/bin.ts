@@ -7,12 +7,9 @@ import { generateFrom, Generated } from 'guardgen-lib';
 const openFile = (path: string): string => fs.readFileSync(path, 'utf8');
 const error = (message: string) => console.error(`ERROR: ${message}`);
 
+const printGuards = (generated: Generated) => console.log(concatGuards(generated));
 
-const printGuards = (generated: Generated) =>
-    console.log(concatGuards(generated));
-
-const concatGuards = ({ imports, guards }: Generated): string =>
-    [imports].concat(guards).join('\n');
+const concatGuards = ({ imports, guards }: Generated): string => [imports].concat(guards).join('\n');
 
 const writeGuardsFile = (generated: Generated, path: string) =>
     fs.writeFileSync(path, concatGuards(generated), { encoding: 'utf8' });
@@ -36,25 +33,21 @@ program
             if (outfile) {
                 const importFrom = importPath(inputFile, outputFile);
                 generated = generateFrom(inputFile, {
-                  importFrom,
-                  embedWarnings
+                    importFrom,
+                    embedWarnings,
                 });
                 writeGuardsFile(generated, outfile);
             } else {
                 generated = generateFrom(inputFile, { embedWarnings });
                 printGuards(generated);
             }
-
         } else {
             error('please pass a typescript file to generate guards for');
         }
     });
 
-
 if (!process.argv.slice(2).length) {
     program.outputHelp();
-
 } else {
     program.parse(process.argv);
-
 }

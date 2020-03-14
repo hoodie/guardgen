@@ -1,0 +1,8 @@
+# :vim ft=yaml:
+# .prettierrc or .prettierrc.yaml
+printWidth: 120
+trailingComma: "es5"
+useTabs: false
+tabWidth: 4
+semi: true
+singleQuote: true

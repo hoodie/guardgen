@@ -17,10 +17,7 @@ const propertyName = (node: ts.PropertySignature): string => {
 
 // list the names of interface properties
 const propertyNames = (iface: ts.InterfaceDeclaration): string[] =>
-    iface.members
-        .filter(ts.isPropertySignature)
-        .map(propertyName) as string[];
-
+    iface.members.filter(ts.isPropertySignature).map(propertyName) as string[];
 
 // generate an individual interface property check
 const propertyCheck = ({ embedWarnings }: GeneratorConfig) => {
@@ -31,17 +28,15 @@ const propertyCheck = ({ embedWarnings }: GeneratorConfig) => {
     }
 };
 
-
 const propertyDescription = ({ name, isOptional, typeName }: NodeInfo) =>
-    `${name}: ${typeName}${ isOptional ? `?` : '' }`;
+    `${name}: ${typeName}${isOptional ? `?` : ''}`;
 
 const silentPropertyCheck = (node: NodeInfo) =>
     // `${node.isOptional ? `!(${node.name}) || ` : '' }${node.valueCheck}`;
-    `${node.isOptional ? `!(${node.name}) || ` : '' }${node.valueCheck} /* ${propertyDescription(node)}*/`;
-
+    `${node.isOptional ? `!(${node.name}) || ` : ''}${node.valueCheck} /* ${propertyDescription(node)}*/`;
 
 const propertyCheckWithWarning = ({ name, isOptional, valueCheck, typeName }: NodeInfo) => {
-    const pc = silentPropertyCheck({name, isOptional, valueCheck, typeName});
+    const pc = silentPropertyCheck({ name, isOptional, valueCheck, typeName });
     return `((${name}) => {
         const ${name}ChecksOut = ${pc};
         if(!${name}ChecksOut) {console.warn("${name} is not a propper ${typeName}")}
@@ -49,12 +44,17 @@ const propertyCheckWithWarning = ({ name, isOptional, valueCheck, typeName }: No
         })(${name})`;
 };
 
-
 // generate all checks for individual interface properties
 const propertyChecks = (iface: ts.InterfaceDeclaration, exportedSymbols: string[], config: GeneratorConfig): string =>
     iface.members
         .filter(ts.isPropertySignature)
-        .map(prop => visitNode({node: prop as any, name: propertyName(prop), exportedSymbols }))
+        .map(prop =>
+            visitNode({
+                node: prop as any,
+                name: propertyName(prop),
+                exportedSymbols,
+            })
+        )
         .map(propertyCheck(config))
         .join(' &&\n        ');
 
@@ -72,7 +72,7 @@ const interfaceGuard = (iface: ts.InterfaceDeclaration, exportedSymbols: string[
     return `\n// generated typeguard for ${name}\n${head} {\n    ${destructuring};\n\n    return ${checks};\n};\n\n`;
 };
 
-const publicStatements = (sourceFile: ts.SourceFile): { statements: Statement[], names: string[] } => {
+const publicStatements = (sourceFile: ts.SourceFile): { statements: Statement[]; names: string[] } => {
     const names: string[] = [];
     const statements: Statement[] = [];
 
@@ -83,7 +83,7 @@ const publicStatements = (sourceFile: ts.SourceFile): { statements: Statement[],
         }
     });
 
-    return {statements, names};
+    return { statements, names };
 };
 
 const typeGuard = (node: ts.TypeAliasDeclaration, exportedSymbols: string[]) => {
@@ -105,7 +105,6 @@ const generateGuard = (node: ts.Node, exportedSymbols: string[], config: Generat
         return `// `;
     }
 };
-
 
 // public
 

@@ -11,12 +11,7 @@ export interface Generated {
 
 export function generateFrom(sourceFilePath: string, config: GeneratorConfig): Generated {
     const sourceText = openFile(sourceFilePath);
-    const sourceFile = ts.createSourceFile(
-        'x.ts',
-        sourceText,
-        ts.ScriptTarget.Latest,
-        true
-    );
+    const sourceFile = ts.createSourceFile('x.ts', sourceText, ts.ScriptTarget.Latest, true);
 
     const { importFrom } = config;
     const imports = importFrom && generateImportLine(sourceFile, importFrom);
