@@ -1,6 +1,9 @@
 {
     "private": true,
-    "workspaces": [ "library", "bin" ],
+    "workspaces": [
+        "library",
+        "bin"
+    ],
     "scripts": {
         "build:lib": "yarn --cwd library build",
         "build:bin": "yarn --cwd bin build",
