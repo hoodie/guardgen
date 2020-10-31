@@ -1,0 +1,16 @@
+{
+    "name": "guardgen-example",
+    "version": "0.1.0",
+    "description": "an example project using guardgen",
+    "author": "Hendrik Sollich <hendrik@hoodie.de>",
+    "license": "MIT",
+    "scripts": {
+        "build": "yarn --cwd ../bin build"
+    },
+    "dependencies": {
+        "guardgen": "0.1.0"
+    },
+    "engines": {
+        "node": ">=15.0.0"
+    }
+}

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import program from 'commander';
 import * as fs from 'fs';
 import { importPath, outfilePath } from './file-utils';
@@ -25,19 +26,16 @@ program
     .action((inputFile, { warners, outfile }) => {
         const embedWarnings = !!warners;
         if (inputFile) {
-            const outputFile = outfilePath(inputFile, outfile);
-
-            let generated: Generated;
-
             if (outfile) {
+                const outputFile = outfilePath(inputFile, outfile);
                 const importFrom = importPath(inputFile, outputFile);
-                generated = generateFrom(inputFile, {
+                let generated = generateFrom(inputFile, {
                     importFrom,
                     embedWarnings,
                 });
                 writeGuardsFile(generated, outfile);
             } else {
-                generated = generateFrom(inputFile, { embedWarnings });
+                let generated = generateFrom(inputFile, { embedWarnings });
                 printGuards(generated);
             }
         } else {

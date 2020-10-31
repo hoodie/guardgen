@@ -1,5 +1,7 @@
 export const comment = (...x: any[]) => console.log.apply(console, [`//`].concat(x) as any);
+
 export const dir = (x: any) => console.dir(x, { colors: true, depth: 4 });
+
 export const odir = (x: any) =>
     dir(
         JSON.parse(
@@ -10,4 +12,5 @@ export const odir = (x: any) =>
             })
         )
     );
+
 export const capitalize = (s: string): string => s[0].toUpperCase() + s.slice(1);
