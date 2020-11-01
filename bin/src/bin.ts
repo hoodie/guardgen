@@ -24,7 +24,7 @@ program
     .option('-d, --debug', 'print some internals for pros')
     .option('-g, --guardsfile', 'put a .guards.ts file next to your input')
     .option('-o, --outfile [FILE]', 'path to file to generate')
-    .action((inputFile, { warners, outfile, debug }) => {
+    .action((inputFile: string, { warners, outfile, debug }) => {
         toggleLogger(debug);
         logger.dir({ inputFile, warners, debug, outfile });
         const embedWarnings = !!warners;
