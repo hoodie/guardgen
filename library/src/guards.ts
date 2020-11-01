@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import ts, { Statement, Node } from 'typescript';
 import { capitalize } from './utils';
-import { isExported, NodeInfo, visitNode } from './visit';
+import { isExported, NodeInfo, tryName, visitNode } from './visit';
+import { logger, odir } from './utils';
 
 // internal
 
@@ -49,7 +50,7 @@ const propertyCheckWithWarning = ({ name, isOptional, valueCheck, typeName }: No
 const propertyChecks = (iface: ts.InterfaceDeclaration, exportedSymbols: string[], config: GeneratorConfig): string =>
     iface.members
         .filter(ts.isPropertySignature)
-        .map(prop =>
+        .map((prop) =>
             visitNode({
                 node: prop as any,
                 name: propertyName(prop),
@@ -77,7 +78,7 @@ const publicStatements = (sourceFile: ts.SourceFile): { statements: Statement[];
     const names: string[] = [];
     const statements: Statement[] = [];
 
-    sourceFile.statements.filter(isExported).forEach(statement => {
+    sourceFile.statements.filter(isExported).forEach((statement) => {
         if (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) {
             statements.push(statement);
             names.push(statement.name.escapedText as string);
@@ -98,6 +99,9 @@ const typeGuard = (node: ts.TypeAliasDeclaration, exportedSymbols: string[]) => 
 };
 
 const generateGuard = (node: ts.Node, exportedSymbols: string[], config: GeneratorConfig): string => {
+    logger.debug(`generateGuard "${tryName(node)}"`);
+    // odir(node);
+
     if (ts.isInterfaceDeclaration(node)) {
         return interfaceGuard(node, exportedSymbols, config);
     } else if (ts.isTypeAliasDeclaration(node)) {
@@ -118,14 +122,16 @@ export interface GeneratorConfig {
 }
 
 export function generateImportLine(sourceFile: ts.SourceFile, importFrom: string): string {
+    logger.debug('generateImportLine', { importFrom });
     const { names } = publicStatements(sourceFile);
     return `import {${names.sort().join(', ')}} from '${importFrom}';`;
 }
 
 export function generateGuards(sourceFile: ts.SourceFile, config: GeneratorConfig): string[] {
+    logger.debug('generateGuards', { config });
     const guards: string[] = [];
     const { statements, names: exportedSymbols } = publicStatements(sourceFile);
-    statements.forEach(node => {
+    statements.forEach((node) => {
         const guard = generateGuard(node, exportedSymbols, config);
         guards.push(guard);
     });

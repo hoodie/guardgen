@@ -1,10 +1,11 @@
-import ts from 'typescript';
-import { SyntaxKind } from 'typescript';
+import ts, { SyntaxKind } from 'typescript';
+import { logger, odir } from './utils';
 
 export interface NodeInfo {
     name: string;
     valueCheck: string;
     typeName: string;
+    typeArguments?: ts.NodeArray<ts.TypeNode>;
     isOptional: boolean;
 }
 
@@ -30,24 +31,31 @@ const typeCheck = (typ: ts.TypeNode): string => {
     return valueCheck ? `(x) => ${valueCheck}` : `/* unimplemented for ${typeName} */`;
 };
 
+export const tryName = (node: ts.Node & any) => node.name.escapedText || node.name;
+
 // string, number, object
-const toNodeInfo: Visitor = ({ name, typeName, valueCheck, isOptional }: VisitorContext): NodeInfo => ({
-    name,
+const toNodeInfo: Visitor = ({ name, typeName, typeArguments, valueCheck, isOptional }: VisitorContext): NodeInfo => ({
+    // name,
+    name: (logger.debug('    toNodeInfo', typeName), name),
     typeName,
+    typeArguments,
     valueCheck,
     isOptional,
 });
 
 // string, number, object
-const visitPrimitive: Visitor = ({ name, typeName, isOptional }: VisitorContext): NodeInfo => ({
-    name,
+const visitPrimitive: Visitor = ({ name, typeName, typeArguments, isOptional }: VisitorContext): NodeInfo => ({
+    // name,
+    name: (logger.debug('    visitPrimitive', typeName), name),
     typeName,
+    typeArguments,
     valueCheck: `typeof ${name} === '${typeName}'`,
     isOptional,
 });
 
 // rootVisitor
 export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContext>): NodeInfo {
+    logger.debug('visitNode', { name });
     if (!hasType(node)) {
         throw new Error('only TypeNodes allowed');
     }
@@ -55,13 +63,13 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
     const ctx = {
         name: name || 'x',
         node,
+        typeArguments: ((node as any) as ts.NodeWithTypeArguments).typeArguments,
         valueCheck: `true /* unimplemented for ${SyntaxKind[node.type.kind]} "${name}" */`,
         isOptional: !!(node as any).questionToken,
         exportedSymbols: exportedSymbols || [],
     };
 
     if (node.type.kind === SyntaxKind.NumberKeyword) {
-        // odir({baseContext})
         return visitPrimitive({ ...ctx, typeName: 'number' });
     } else if (node.type.kind === SyntaxKind.StringKeyword) {
         return visitPrimitive({ ...ctx, typeName: 'string' });
@@ -93,20 +101,31 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
             const preCheck = ctx.isOptional ? `${name} && ` : ''; // because a || doesn't cut it
             const valueCheck = exported ? `${preCheck}is${typeName}(${name})` : `true /* ${name}: ${typeName}*/`;
 
+            logger.debug('🤔', {
+                isExpressionWithTypeArguments: ts.isExpressionWithTypeArguments(node),
+                info: toNodeInfo({
+                    ...ctx,
+                    typeName,
+                    typeArguments: node.type.typeArguments,
+                    valueCheck,
+                }),
+            });
+            odir(node);
             return toNodeInfo({
                 ...ctx,
                 typeName,
+                typeArguments: node.type.typeArguments,
                 valueCheck,
             });
         } else {
             throw new Error('unhandled case: typereference without identifier');
         }
     } else if (ts.isUnionTypeNode(node.type)) {
-        const l = node.type.types.map(t => visitNode({ ...ctx, node: { type: t } as any }));
-        const check = l.map(t => t.valueCheck).join(' || ');
+        const l = node.type.types.map((t) => visitNode({ ...ctx, node: { type: t } as any }));
+        const check = l.map((t) => t.valueCheck).join(' || ');
         return toNodeInfo({
             ...ctx,
-            typeName: l.map(t => t.typeName).join(' | '),
+            typeName: l.map((t) => t.typeName).join(' | '),
             valueCheck: `(${check})`,
         });
     } else if (ts.isParenthesizedTypeNode(node.type)) {

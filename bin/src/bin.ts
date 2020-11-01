@@ -3,7 +3,7 @@ import program from 'commander';
 import * as fs from 'fs';
 import { importPath, outfilePath } from './file-utils';
 
-import { generateFrom, Generated } from 'guardgen-lib';
+import { generateFrom, Generated, logger, toggleLogger } from 'guardgen-lib';
 
 const error = (message: string) => console.error(`ERROR: ${message}`);
 
@@ -21,9 +21,12 @@ program
     .alias('gen')
     .description('generate guards from given ts file')
     .option('-w, --warners', 'embed code that produces warnings')
+    .option('-d, --debug', 'print some internals for pros')
     .option('-g, --guardsfile', 'put a .guards.ts file next to your input')
     .option('-o, --outfile [FILE]', 'path to file to generate')
-    .action((inputFile, { warners, outfile }) => {
+    .action((inputFile, { warners, outfile, debug }) => {
+        toggleLogger(debug);
+        logger.dir({ inputFile, warners, debug, outfile });
         const embedWarnings = !!warners;
         if (inputFile) {
             if (outfile) {
@@ -36,7 +39,7 @@ program
                 writeGuardsFile(generated, outfile);
             } else {
                 let generated = generateFrom(inputFile, { embedWarnings });
-                printGuards(generated);
+                if (!debug) printGuards(generated);
             }
         } else {
             error('please pass a typescript file to generate guards for');
