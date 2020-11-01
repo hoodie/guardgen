@@ -33,10 +33,19 @@ const typeCheck = (typ: ts.TypeNode): string => {
 
 export const tryName = (node: ts.Node & any) => node.name.escapedText || node.name;
 
+const debugNode = (node: ts.Node & HasType) => {
+    const info = {
+        type: ts.SyntaxKind[node.type.kind],
+        name: tryName(node),
+        kind: ts.SyntaxKind[node.kind],
+    };
+    logger.log(`🔑 ${info.kind} '${info.name}' = ${info.type}`);
+    // odir(node)
+};
+
 // string, number, object
 const toNodeInfo: Visitor = ({ name, typeName, typeArguments, valueCheck, isOptional }: VisitorContext): NodeInfo => ({
-    // name,
-    name: (logger.debug('    toNodeInfo', typeName), name),
+    name,
     typeName,
     typeArguments,
     valueCheck,
@@ -45,8 +54,8 @@ const toNodeInfo: Visitor = ({ name, typeName, typeArguments, valueCheck, isOpti
 
 // string, number, object
 const visitPrimitive: Visitor = ({ name, typeName, typeArguments, isOptional }: VisitorContext): NodeInfo => ({
-    // name,
-    name: (logger.debug('    visitPrimitive', typeName), name),
+    name,
+    // name: (logger.debug('    visitPrimitive', typeName), name),
     typeName,
     typeArguments,
     valueCheck: `typeof ${name} === '${typeName}'`,
@@ -55,7 +64,7 @@ const visitPrimitive: Visitor = ({ name, typeName, typeArguments, isOptional }: 
 
 // rootVisitor
 export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContext>): NodeInfo {
-    logger.debug('visitNode', { name });
+    logger.debug('  visitNode');
     if (!hasType(node)) {
         throw new Error('only TypeNodes allowed');
     }
@@ -68,6 +77,8 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
         isOptional: !!(node as any).questionToken,
         exportedSymbols: exportedSymbols || [],
     };
+
+    debugNode(node);
 
     if (node.type.kind === SyntaxKind.NumberKeyword) {
         return visitPrimitive({ ...ctx, typeName: 'number' });
@@ -94,6 +105,10 @@ export function visitNode({ node, name, exportedSymbols }: Partial<VisitorContex
             typeName: `Array<${elementTypeName}>`,
             valueCheck: `(Array.isArray(${name}) && ${name}.every(${elementCheck}))`,
         });
+    } else if (ts.isMappedTypeNode(node.type)) {
+        logger.debug('🤯');
+        odir(node);
+        throw new Error('unhandled case: typereference without identifier');
     } else if (ts.isTypeReferenceNode(node.type)) {
         if (ts.isIdentifier(node.type.typeName)) {
             const typeName = node.type.typeName.escapedText as string;

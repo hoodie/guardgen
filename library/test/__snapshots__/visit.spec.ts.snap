@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`checks for aliases primitive types alias of any 1`] = `
+"
+// generated typeguard for MyType
+export const isMyType = (maybeMyType: any): maybeMyType is MyType =>
+    true;"
+`;
+
+exports[`checks for aliases primitive types alias of number 1`] = `
+"
+// generated typeguard for MyType
+export const isMyType = (maybeMyType: any): maybeMyType is MyType =>
+    typeof maybeMyType === 'number';"
+`;
+
+exports[`checks for aliases primitive types alias of object 1`] = `
+"
+// generated typeguard for MyType
+export const isMyType = (maybeMyType: any): maybeMyType is MyType =>
+    typeof maybeMyType === 'object';"
+`;
+
+exports[`checks for aliases primitive types alias of string 1`] = `
+"
+// generated typeguard for MyType
+export const isMyType = (maybeMyType: any): maybeMyType is MyType =>
+    typeof maybeMyType === 'string';"
+`;
+
+exports[`checks for interface Properies properties with primitive types alias of any 1`] = `
+"
+// generated typeguard for MyType
+export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
+    const {fieldA, fieldB} = maybeMyType;
+
+    return (
+        true /* fieldA: any*/ &&
+        true /* fieldB: any*/;
+    )
+};
+
+"
+`;
+
+exports[`checks for interface Properies properties with primitive types alias of number 1`] = `
+"
+// generated typeguard for MyType
+export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
+    const {fieldA, fieldB} = maybeMyType;
+
+    return (
+        typeof fieldA === 'number' /* fieldA: number*/ &&
+        typeof fieldB === 'number' /* fieldB: number*/;
+    )
+};
+
+"
+`;
+
+exports[`checks for interface Properies properties with primitive types alias of object 1`] = `
+"
+// generated typeguard for MyType
+export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
+    const {fieldA, fieldB} = maybeMyType;
+
+    return (
+        typeof fieldA === 'object' /* fieldA: object*/ &&
+        typeof fieldB === 'object' /* fieldB: object*/;
+    )
+};
+
+"
+`;
+
+exports[`checks for interface Properies properties with primitive types alias of string 1`] = `
+"
+// generated typeguard for MyType
+export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
+    const {fieldA, fieldB} = maybeMyType;
+
+    return (
+        typeof fieldA === 'string' /* fieldA: string*/ &&
+        typeof fieldB === 'string' /* fieldB: string*/;
+    )
+};
+
+"
+`;

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import ts from 'typescript';
-import { emitGuards, emitImportLine, EmitterConfig } from './guards';
+import { emitGuardsForSourceFile, emitImportLine, EmitterConfig } from './guards';
 import { logger } from './utils';
 
 export { logger, toggleLogger } from './utils';
@@ -19,7 +19,7 @@ export function generateFrom(sourceFilePath: string, config: EmitterConfig): Gen
 
     const { importFrom } = config;
     const imports = importFrom && emitImportLine(sourceFile, importFrom);
-    const guards = emitGuards(sourceFile, config);
+    const guards = emitGuardsForSourceFile(sourceFile, config);
 
     return { imports, guards };
 }

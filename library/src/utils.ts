@@ -5,6 +5,7 @@ export const comment = (...x: any[]) => logger.log.apply(console, [`//`].concat(
 const utilLogger = new Console({ stdout: process.stderr, stderr: process.stderr });
 const dumpLogger = {
     log(...args: any) { },
+    info(...args: any) { },
     dir(...args: any) { },
     table(...args: any) { },
     debug(...args: any) { },

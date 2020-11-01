@@ -5,8 +5,8 @@ import { logger } from './utils';
 
 import { emitInterfaceGuard, emitTypeGuard } from "./guardEmitters";
 
-const emitGuard = (node: ts.Node, exportedSymbols: string[], config: EmitterConfig): string => {
-    logger.debug(`generateGuard "${tryName(node)}"`);
+export const emitGuard = (node: ts.Node, exportedSymbols: string[], config: EmitterConfig): string => {
+    logger.debug(`\nemitGuard" ${tryName(node)}"`);
 
     if (ts.isInterfaceDeclaration(node)) {
         return emitInterfaceGuard(node, exportedSymbols, config);
@@ -19,7 +19,7 @@ const emitGuard = (node: ts.Node, exportedSymbols: string[], config: EmitterConf
     }
 };
 
-const publicStatements = (sourceFile: ts.SourceFile): { statements: ts.Statement[]; names: string[] } => {
+export const publicStatements = (sourceFile: ts.SourceFile): { statements: ts.Statement[]; names: string[] } => {
     const names: string[] = [];
     const statements: ts.Statement[] = [];
 
@@ -40,17 +40,17 @@ export interface EmitterConfig {
     importFrom?: string;
 
     // generate warning code for every single property
-    embedWarnings: boolean;
+    embedWarnings?: boolean;
 }
 
 export function emitImportLine(sourceFile: ts.SourceFile, importFrom: string): string {
-    logger.debug('generateImportLine', { importFrom });
+    logger.debug('emitImportLine', { importFrom });
     const { names } = publicStatements(sourceFile);
     return `import {${names.sort().join(', ')}} from '${importFrom}';`;
 }
 
-export function emitGuards(sourceFile: ts.SourceFile, config: EmitterConfig): string[] {
-    logger.debug('generateGuards', { config });
+export function emitGuardsForSourceFile(sourceFile: ts.SourceFile, config: EmitterConfig): string[] {
+    logger.debug('emitGuards', { config });
     const guards: string[] = [];
     const { statements, names: exportedSymbols } = publicStatements(sourceFile);
     statements.forEach((node) => {

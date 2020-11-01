@@ -74,5 +74,5 @@ export const emitInterfaceGuard = (
 
     const destructuring = `const {${properties}} = ${maybe}`;
 
-    return `\n// generated typeguard for ${name}\n${head} {\n    ${destructuring};\n\n    return ${checks};\n};\n\n`;
+    return `\n// generated typeguard for ${name}\n${head} {\n    ${destructuring};\n\n    return (\n        ${checks};\n    )\n};\n\n`;
 };

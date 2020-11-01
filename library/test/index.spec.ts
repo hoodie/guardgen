@@ -7,7 +7,7 @@ import { generateFrom } from '../src';
 const fixture1 = 'example-types.ts';
 const fixturePath = (s: string) => path.join(path.join(path.normalize(__dirname), 'fixtures', s));
 
-describe('generator', () => {
+describe.skip('generator', () => {
     it('generates the same code as yesterday without warnings', () => {
         const generated = generateFrom(fixturePath(fixture1), {
             embedWarnings: false,

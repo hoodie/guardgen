@@ -39,7 +39,7 @@ program
                 writeGuardsFile(generated, outfile);
             } else {
                 let generated = generateFrom(inputFile, { embedWarnings });
-                if (!debug) printGuards(generated);
+                printGuards(generated);
             }
         } else {
             error('please pass a typescript file to generate guards for');
