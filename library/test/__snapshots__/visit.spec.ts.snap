@@ -28,7 +28,7 @@ export const isMyType = (maybeMyType: any): maybeMyType is MyType =>
     typeof maybeMyType === 'string';"
 `;
 
-exports[`checks for interface Properies properties with primitive types alias of any 1`] = `
+exports[`checks for interface properies properties with primitive types alias of any 1`] = `
 "
 // generated typeguard for MyType
 export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
@@ -43,7 +43,7 @@ export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
 "
 `;
 
-exports[`checks for interface Properies properties with primitive types alias of number 1`] = `
+exports[`checks for interface properies properties with primitive types alias of number 1`] = `
 "
 // generated typeguard for MyType
 export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
@@ -58,7 +58,7 @@ export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
 "
 `;
 
-exports[`checks for interface Properies properties with primitive types alias of object 1`] = `
+exports[`checks for interface properies properties with primitive types alias of object 1`] = `
 "
 // generated typeguard for MyType
 export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
@@ -73,7 +73,7 @@ export const isMyType = (maybeMyType: any): maybeMyType is MyType => {
 "
 `;
 
-exports[`checks for interface Properies properties with primitive types alias of string 1`] = `
+exports[`checks for interface properies properties with primitive types alias of string 1`] = `
 "
 // generated typeguard for MyType
 export const isMyType = (maybeMyType: any): maybeMyType is MyType => {

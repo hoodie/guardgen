@@ -1,12 +1,19 @@
-export interface Foo {
-    name: 'foo';
-    value: string;
-    amount?: number;
-    more: object,
-    muchMore: any,
-}
+// export interface Foo {
+//     name: 'foo';
+//     value: string;
+//     amount?: number;
+//     more: object,
+//     muchMore: any,
+// }
 
-export type PFoo = Partial<Foo>;
+// export type MyString = string;
+// export type MyString2 = 'string';
+
+export type Partial<T> = {
+    [P in keyof T]?: T[P];
+};
+
+// export type PFoo = Partial<Foo>;
 
 // export interface Bar {
 //     name: 'bar';
